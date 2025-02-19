@@ -10,7 +10,7 @@ void drawStove();
 void drawMicrowave();
 void drawUpperCabinets();
 void drawLeftCabinet();
-
+void drawWallsAndCeiling();
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -20,7 +20,7 @@ void display() {
               10, 8, 0,   // Look at this point
               0, 1, 0);  // Up vector
 
-
+    drawWallsAndCeiling();
     drawFridge();
     drawDrawers();
     drawCabinets();
@@ -33,6 +33,43 @@ void display() {
     drawLeftCabinet();
 
     glutSwapBuffers();
+}
+void drawWallsAndCeiling() {
+    glBegin(GL_QUADS);
+    glColor3f(1.0f, 0.96f, 0.86f);  // Cream color
+
+    // Back Wall (moved back by 2)
+    glVertex3f(-10, 0, -2);
+    glVertex3f(30, 0, -2);
+    glVertex3f(30, 20, -2);
+    glVertex3f(-10, 20, -2);
+
+    // Left Wall
+    glVertex3f(-10, 0, -2);
+    glVertex3f(-10, 20, -2);
+    glVertex3f(-10, 20, 10);
+    glVertex3f(-10, 0, 10);
+
+    // Right Wall
+    glVertex3f(20, 0, -2);
+    glVertex3f(20, 20, -2);
+    glVertex3f(20, 20, 10);
+    glVertex3f(20, 0, 10);
+
+    // Ceiling
+    glColor3f(9.0f, 0.96f, 0.96f);  // Cream color
+    glVertex3f(-10, 19, -2);
+    glVertex3f(20, 19, -2);
+    glVertex3f(20, 19, 10);
+    glVertex3f(-10, 19, 10);
+
+    // Floor (extended forward by 3)
+    glColor3f(0.55f, 0.27f, 0.07f);  // Brown color
+    glVertex3f(-10, 0, -2);
+    glVertex3f(20, 0, -2);
+    glVertex3f(20, 0, 13);
+    glVertex3f(-10, 0, 13);
+    glEnd();
 }
 
 void drawFridge() {
