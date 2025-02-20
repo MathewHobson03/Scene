@@ -1,5 +1,5 @@
 #include <GL/glut.h>
-
+#include <math.h>
 void drawFridge();
 void drawDrawers();
 void drawCabinets();
@@ -24,7 +24,7 @@ void display() {
     drawFridge();
     drawDrawers();
     drawCabinets();
-
+    
     drawCupboard();
     drawHandles();
     drawStove();
@@ -280,7 +280,7 @@ void drawCabinets() {
 }
 
 
-// #####################################################################################################################################
+
 
 
 void drawCupboard(){
@@ -477,58 +477,75 @@ void drawStove(){
         glVertex3f(3, 0, 2);
     glEnd();
 
-   glBegin(GL_QUADS);
-glColor4f(0.0f, 0.1f, 0.2f, 0.6f);  // Dark blue-tinted glass
+    glBegin(GL_QUADS);
+        glColor4f(0.0f, 0.1f, 0.2f, 0.6f);  // Dark blue-tinted glass
+        // Adjust X position to be centered within the stove
+        glVertex3f(4.5, 4, 2.01); // Left
+        glVertex3f(7.5, 4, 2.01); // Right
+        glVertex3f(7.5, 7, 2.01); // Top Right
+        glVertex3f(4.5, 7, 2.01); // Top Left
+    glEnd();
 
-// Adjust X position to be centered within the stove
-glVertex3f(4.5, 4, 2.01); // Left
-glVertex3f(7.5, 4, 2.01); // Right
-glVertex3f(7.5, 7, 2.01); // Top Right
-glVertex3f(4.5, 7, 2.01); // Top Left
-glEnd();
-glBegin(GL_QUADS);
-glColor3f(0, 0, 0);  // Black handle
+    glBegin(GL_QUADS);
+        glColor3f(0, 0, 0);  // Black handle
+        // Front Face (Z = 2.1)
+        glVertex3f(3.2, 7.3, 2.1);
+        glVertex3f(8.8, 7.3, 2.1);
+        glVertex3f(8.8, 7.6, 2.1);
+        glVertex3f(3.2, 7.6, 2.1);
 
-// Front Face (Z = 2.1)
-glVertex3f(3.2, 7.3, 2.1);
-glVertex3f(8.8, 7.3, 2.1);
-glVertex3f(8.8, 7.6, 2.1);
-glVertex3f(3.2, 7.6, 2.1);
+        // Back Face (Z = 2.01)
+        glVertex3f(3.2, 7.3, 2.01);
+        glVertex3f(3.2, 7.6, 2.01);
+        glVertex3f(8.8, 7.6, 2.01);
+        glVertex3f(8.8, 7.3, 2.01);
 
-// Back Face (Z = 2.01)
-glVertex3f(3.2, 7.3, 2.01);
-glVertex3f(3.2, 7.6, 2.01);
-glVertex3f(8.8, 7.6, 2.01);
-glVertex3f(8.8, 7.3, 2.01);
+        // Left Face (X = 3.2)
+        glVertex3f(3.2, 7.3, 2.01);
+        glVertex3f(3.2, 7.3, 2.1);
+        glVertex3f(3.2, 7.6, 2.1);
+        glVertex3f(3.2, 7.6, 2.01);
 
-// Left Face (X = 3.2)
-glVertex3f(3.2, 7.3, 2.01);
-glVertex3f(3.2, 7.3, 2.1);
-glVertex3f(3.2, 7.6, 2.1);
-glVertex3f(3.2, 7.6, 2.01);
+        // Right Face (X = 8.8)
+        glVertex3f(8.8, 7.3, 2.01);
+        glVertex3f(8.8, 7.6, 2.01);
+        glVertex3f(8.8, 7.6, 2.1);
+        glVertex3f(8.8, 7.3, 2.1);
 
-// Right Face (X = 8.8)
-glVertex3f(8.8, 7.3, 2.01);
-glVertex3f(8.8, 7.6, 2.01);
-glVertex3f(8.8, 7.6, 2.1);
-glVertex3f(8.8, 7.3, 2.1);
+        // Top Face (Y = 7.6)
+        glVertex3f(3.2, 7.6, 2.01);
+        glVertex3f(8.8, 7.6, 2.01);
+        glVertex3f(8.8, 7.6, 2.1);
+        glVertex3f(3.2, 7.6, 2.1);
 
-// Top Face (Y = 7.6)
-glVertex3f(3.2, 7.6, 2.01);
-glVertex3f(8.8, 7.6, 2.01);
-glVertex3f(8.8, 7.6, 2.1);
-glVertex3f(3.2, 7.6, 2.1);
+        // Bottom Face (Y = 7.3)
+        glVertex3f(3.2, 7.3, 2.01);
+        glVertex3f(3.2, 7.3, 2.1);
+        glVertex3f(8.8, 7.3, 2.1);
+        glVertex3f(8.8, 7.3, 2.01);
+    glEnd();
 
-// Bottom Face (Y = 7.3)
-glVertex3f(3.2, 7.3, 2.01);
-glVertex3f(3.2, 7.3, 2.1);
-glVertex3f(8.8, 7.3, 2.1);
-glVertex3f(8.8, 7.3, 2.01);
-
-glEnd();
-
-
-
+    // Add four black circles as burners on the top surface of the stove
+    glColor3f(0, 0, 0);  // Black color for burners
+    int num_segments = 32;
+    float radius = 0.5f;  // Burner radius
+    // Burner center positions on the top surface (Y = 8.001 to avoid z-fighting)
+    float burners[4][2] = {
+        {4.5f, -3.0f},
+        {7.5f, -3.0f},
+        {4.5f, -1.0f},
+        {7.5f, -1.0f}
+    };
+    for (int b = 0; b < 4; b++){
+        glBegin(GL_POLYGON);
+        for (int i = 0; i < num_segments; i++){
+            float theta = 2.0f * 3.14159f * float(i) / float(num_segments);
+            float x = radius * cos(theta);
+            float z = radius * sin(theta);
+            glVertex3f(burners[b][0] + x, 8.001f, burners[b][1] + z);
+        }
+        glEnd();
+    }
 }
 
 void drawUpperCabinets() {
@@ -762,7 +779,7 @@ void drawLeftCabinet() {
     glEnd();
 }
 
-// ########################################################################################################################################################################
+// ##########################
 
 void init() {
     glEnable(GL_DEPTH_TEST);  // Enable depth testing
