@@ -11,15 +11,19 @@
 void drawFridge();
 void drawDrawers();
 void drawCabinets();
-GLuint floorTexture;
-GLuint wallTexture;
+
 void drawCupboard();
 void drawHandles();
 void drawStove();
 void drawMicrowave();
 void drawUpperCabinets();
 void drawLeftCabinet();
+
 void drawWallsAndCeiling();
+
+GLuint floorTexture;
+GLuint wallTexture;
+
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
@@ -29,11 +33,11 @@ void display() {
               10, 8, 0,   // Look at this point
               0, 1, 0);  // Up vector
 
-    drawWallsAndCeiling();
+
     drawFridge();
     drawDrawers();
     drawCabinets();
-    
+
     drawCupboard();
     drawHandles();
     drawStove();
@@ -41,8 +45,11 @@ void display() {
     drawUpperCabinets();
     drawLeftCabinet();
 
+    drawWallsAndCeiling();
+
     glutSwapBuffers();
 }
+
 void drawWallsAndCeiling() {
     // Enable texturing
     glEnable(GL_TEXTURE_2D);
@@ -103,6 +110,7 @@ void drawWallsAndCeiling() {
     // Disable texturing
     glDisable(GL_TEXTURE_2D);
 }
+
 void drawFridge() {
     glPushMatrix();
         // Transformations
@@ -111,14 +119,14 @@ void drawFridge() {
 
         // Draw the fridge body
         glPushMatrix();
-            glColor3f(0.6, 0.6, 0.6);  
+            glColor3f(0.15, 0.15, 0.15);  
             glScalef(1.0, 2.0, 1.0);   
             glutSolidCube(2);
         glPopMatrix();
 
         // Draw door separation (horizontal line)
         glPushMatrix();
-            glColor3f(0.4, 0.4, 0.4); 
+            glColor3f(0.1, 0.1, 0.1); 
             glBegin(GL_QUADS);
                 glVertex3f(-1.0, 0.80, 1.01);  // Top left
                 glVertex3f( 1.0, 0.80, 1.01);  // Top right
@@ -144,7 +152,7 @@ void drawDrawers() {
 
         // Draw drawer 1
         glPushMatrix();
-            glColor3f(0.8, 0.8, 0.8); 
+            glColor3f(0.4f, 0.2f, 0.1f); 
             glTranslatef(0.0, 0.6, 0.0);
             glScalef(0.3, 0.2, 0.6);
             glutSolidCube(2);  
@@ -164,7 +172,7 @@ void drawDrawers() {
 
         // Draw drawer 2
         glPushMatrix();
-            glColor3f(0.8, 0.8, 0.8); 
+            glColor3f(0.4f, 0.2f, 0.1f); 
             glTranslatef(0.0, 0.2, 0.0);
             glScalef(0.3, 0.2, 0.6);
             glutSolidCube(2);  
@@ -184,7 +192,7 @@ void drawDrawers() {
 
         // Draw drawer 3
         glPushMatrix();
-            glColor3f(0.8, 0.8, 0.8); 
+            glColor3f(0.4f, 0.2f, 0.1f); 
             glTranslatef(0.0, -0.2, 0.0);
             glScalef(0.3, 0.2, 0.6);
             glutSolidCube(2);  
@@ -204,7 +212,7 @@ void drawDrawers() {
         
         // Draw drawer 4
         glPushMatrix();
-            glColor3f(0.8, 0.8, 0.8); 
+            glColor3f(0.4f, 0.2f, 0.1f); 
             glTranslatef(0.0, -0.6, 0.0);
             glScalef(0.3, 0.2, 0.6);
             glutSolidCube(2);  
@@ -234,7 +242,7 @@ void drawCabinets() {
         // Draw cabinet above fridge
         // base
         glPushMatrix();
-            glColor3f(0.8, 0.8, 0.8);
+            glColor3f(0.5f, 0.3f, 0.1f);
             glTranslatef(0.0, 0.0, 0.0);
             glScalef(2.0, 1.0, 1.0);
             glBegin(GL_QUADS);
@@ -276,7 +284,7 @@ void drawCabinets() {
         // Draw right cabinet
         // base
         glPushMatrix();
-            glColor3f(0.8, 0.8, 0.8);
+            glColor3f(0.5f, 0.3f, 0.1f);
             glTranslatef(-1.5, -0.5, 0.0);
             glScalef(1.0, 2.0, 1.0);
             glBegin(GL_QUADS);
@@ -305,13 +313,21 @@ void drawCabinets() {
                 glVertex3f(-1.0,  0.5, 0.01);  // Top center
             glEnd();
         glPopMatrix();
+        // left border line
+        glPushMatrix();
+            glColor3f(0, 0, 0);
+            glBegin(GL_LINES);
+                glVertex3f(-2.0, -1.49, 0.01);  // Bottom center
+                glVertex3f(-2.0,  0.5, 0.01);  // Top center
+            glEnd();
+        glPopMatrix();
 
 
     glPopMatrix();
 }
 
 
-
+// #####################################################################################################################################
 
 
 void drawCupboard(){
@@ -508,75 +524,78 @@ void drawStove(){
         glVertex3f(3, 0, 2);
     glEnd();
 
-    glBegin(GL_QUADS);
-        glColor4f(0.0f, 0.1f, 0.2f, 0.6f);  // Dark blue-tinted glass
-        // Adjust X position to be centered within the stove
-        glVertex3f(4.5, 4, 2.01); // Left
-        glVertex3f(7.5, 4, 2.01); // Right
-        glVertex3f(7.5, 7, 2.01); // Top Right
-        glVertex3f(4.5, 7, 2.01); // Top Left
-    glEnd();
+   glBegin(GL_QUADS);
+glColor4f(0.0f, 0.1f, 0.2f, 0.6f);  // Dark blue-tinted glass
 
-    glBegin(GL_QUADS);
-        glColor3f(0, 0, 0);  // Black handle
-        // Front Face (Z = 2.1)
-        glVertex3f(3.2, 7.3, 2.1);
-        glVertex3f(8.8, 7.3, 2.1);
-        glVertex3f(8.8, 7.6, 2.1);
-        glVertex3f(3.2, 7.6, 2.1);
+// Adjust X position to be centered within the stove
+glVertex3f(4.5, 4, 2.01); // Left
+glVertex3f(7.5, 4, 2.01); // Right
+glVertex3f(7.5, 7, 2.01); // Top Right
+glVertex3f(4.5, 7, 2.01); // Top Left
+glEnd();
+glBegin(GL_QUADS);
+glColor3f(0, 0, 0);  // Black handle
 
-        // Back Face (Z = 2.01)
-        glVertex3f(3.2, 7.3, 2.01);
-        glVertex3f(3.2, 7.6, 2.01);
-        glVertex3f(8.8, 7.6, 2.01);
-        glVertex3f(8.8, 7.3, 2.01);
+// Front Face (Z = 2.1)
+glVertex3f(3.2, 7.3, 2.1);
+glVertex3f(8.8, 7.3, 2.1);
+glVertex3f(8.8, 7.6, 2.1);
+glVertex3f(3.2, 7.6, 2.1);
 
-        // Left Face (X = 3.2)
-        glVertex3f(3.2, 7.3, 2.01);
-        glVertex3f(3.2, 7.3, 2.1);
-        glVertex3f(3.2, 7.6, 2.1);
-        glVertex3f(3.2, 7.6, 2.01);
+// Back Face (Z = 2.01)
+glVertex3f(3.2, 7.3, 2.01);
+glVertex3f(3.2, 7.6, 2.01);
+glVertex3f(8.8, 7.6, 2.01);
+glVertex3f(8.8, 7.3, 2.01);
 
-        // Right Face (X = 8.8)
-        glVertex3f(8.8, 7.3, 2.01);
-        glVertex3f(8.8, 7.6, 2.01);
-        glVertex3f(8.8, 7.6, 2.1);
-        glVertex3f(8.8, 7.3, 2.1);
+// Left Face (X = 3.2)
+glVertex3f(3.2, 7.3, 2.01);
+glVertex3f(3.2, 7.3, 2.1);
+glVertex3f(3.2, 7.6, 2.1);
+glVertex3f(3.2, 7.6, 2.01);
 
-        // Top Face (Y = 7.6)
-        glVertex3f(3.2, 7.6, 2.01);
-        glVertex3f(8.8, 7.6, 2.01);
-        glVertex3f(8.8, 7.6, 2.1);
-        glVertex3f(3.2, 7.6, 2.1);
+// Right Face (X = 8.8)
+glVertex3f(8.8, 7.3, 2.01);
+glVertex3f(8.8, 7.6, 2.01);
+glVertex3f(8.8, 7.6, 2.1);
+glVertex3f(8.8, 7.3, 2.1);
 
-        // Bottom Face (Y = 7.3)
-        glVertex3f(3.2, 7.3, 2.01);
-        glVertex3f(3.2, 7.3, 2.1);
-        glVertex3f(8.8, 7.3, 2.1);
-        glVertex3f(8.8, 7.3, 2.01);
-    glEnd();
+// Top Face (Y = 7.6)
+glVertex3f(3.2, 7.6, 2.01);
+glVertex3f(8.8, 7.6, 2.01);
+glVertex3f(8.8, 7.6, 2.1);
+glVertex3f(3.2, 7.6, 2.1);
 
-    // Add four black circles as burners on the top surface of the stove
-    glColor3f(0, 0, 0);  // Black color for burners
-    int num_segments = 32;
-    float radius = 0.5f;  // Burner radius
-    // Burner center positions on the top surface (Y = 8.001 to avoid z-fighting)
-    float burners[4][2] = {
-        {4.5f, -3.0f},
-        {7.5f, -3.0f},
-        {4.5f, -1.0f},
-        {7.5f, -1.0f}
-    };
-    for (int b = 0; b < 4; b++){
-        glBegin(GL_POLYGON);
-        for (int i = 0; i < num_segments; i++){
-            float theta = 2.0f * 3.14159f * float(i) / float(num_segments);
-            float x = radius * cos(theta);
-            float z = radius * sin(theta);
-            glVertex3f(burners[b][0] + x, 8.001f, burners[b][1] + z);
-        }
-        glEnd();
+// Bottom Face (Y = 7.3)
+glVertex3f(3.2, 7.3, 2.01);
+glVertex3f(3.2, 7.3, 2.1);
+glVertex3f(8.8, 7.3, 2.1);
+glVertex3f(8.8, 7.3, 2.01);
+
+glEnd();
+
+// Add four black circles as burners on the top surface of the stove
+glColor3f(0.6, 0.6, 0.6);  // Black color for burners
+int num_segments = 32;
+float radius = 0.5f;  // Burner radius
+// Burner center positions on the top surface (Y = 8.001 to avoid z-fighting)
+float burners[4][2] = {
+    {4.5f, -3.0f},
+    {7.5f, -3.0f},
+    {4.5f, -1.0f},
+    {7.5f, -1.0f}
+};
+for (int b = 0; b < 4; b++){
+    glBegin(GL_POLYGON);
+    for (int i = 0; i < num_segments; i++){
+        float theta = 2.0f * 3.14159f * float(i) / float(num_segments);
+        float x = radius * cos(theta);
+        float z = radius * sin(theta);
+        glVertex3f(burners[b][0] + x, 8.001f, burners[b][1] + z);
     }
+    glEnd();
+}
+
 }
 
 void drawUpperCabinets() {
@@ -736,7 +755,35 @@ void drawMicrowave() {
     glVertex3f(3, 10, 2);
 
     glEnd();
+
+    // Microwave window
+    glBegin(GL_QUADS);
+    glColor4f(0.1f, 0.1f, 0.1f, 0.7f);  // Dark tinted glass
+    glVertex3f(3.5, 10.5, 2.01);
+    glVertex3f(6, 10.5, 2.01);
+    glVertex3f(6, 12, 2.01);
+    glVertex3f(3.5, 12, 2.01);
+    glEnd();
+
+    // Microwave handle
+    glBegin(GL_QUADS);
+    glColor3f(0.15f, 0.15f, 0.15f);  // Dark tinted glass
+    glVertex3f(6.5, 10.5, 2.01);
+    glVertex3f(7, 10.5, 2.01);
+    glVertex3f(7, 12.5, 2.01);
+    glVertex3f(6.5, 12.5, 2.01);
+    glEnd();
+
+    // Microwave input panel
+    glBegin(GL_QUADS);
+    glColor3f(0.125f, 0.125f, 0.15f);  // Darker gray for control panel
+    glVertex3f(7.5, 10.5, 2.01);
+    glVertex3f(8.5, 10.5, 2.01);
+    glVertex3f(8.5, 12.5, 2.01);
+    glVertex3f(7.5, 12.5, 2.01);
+    glEnd();
 }
+
 void drawLeftCabinet() {
     glBegin(GL_QUADS);
     glColor3f(0.5f, 0.3f, 0.1f);  // Brown cabinet
@@ -808,13 +855,17 @@ void drawLeftCabinet() {
     glVertex3f(2.7, 14, 2.2);
 
     glEnd();
+
+    // Right border line
+    glColor3f(0, 0, 0);  // Black color
+    glLineWidth(1.0f);   // Set line thickness
+    glBegin(GL_LINES);
+    glVertex3f(3, 10, 2.01);  // Start point
+    glVertex3f(3, 16, 2.01);  // End point
+    glEnd();
 }
 
-// #########################
-
-
-
-
+// ########################################################################################################################################################################
 
 void init() {
     glEnable(GL_DEPTH_TEST);  // Enable depth testing
@@ -866,6 +917,7 @@ void init() {
         std::cout << "Failed to load wall texture" << std::endl;
     }
 }
+
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
