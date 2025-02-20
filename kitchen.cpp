@@ -1,9 +1,18 @@
 #include <GL/glut.h>
 #include <math.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+#include<stdio.h>
+#include <ostream>
+#include <iostream>
+#include <GL/glext.h>
+#include <GLES2/gl2.h>
+
 void drawFridge();
 void drawDrawers();
 void drawCabinets();
-
+GLuint floorTexture;
+GLuint wallTexture;
 void drawCupboard();
 void drawHandles();
 void drawStove();
@@ -35,43 +44,65 @@ void display() {
     glutSwapBuffers();
 }
 void drawWallsAndCeiling() {
+    // Enable texturing
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, wallTexture);
+
     glBegin(GL_QUADS);
-    glColor3f(1.0f, 0.96f, 0.86f);  // Cream color
+    glColor3f(1.0f, 1.0f, 1.0f);  // White color to avoid tinting the texture
 
     // Back Wall (moved back by 2)
-    glVertex3f(-10, 0, -2);
-    glVertex3f(30, 0, -2);
-    glVertex3f(30, 20, -2);
-    glVertex3f(-10, 20, -2);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(-10, 0, -2);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f(30, 0, -2);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f(30, 20, -2);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f(-10, 20, -2);
 
     // Left Wall
-    glVertex3f(-10, 0, -2);
-    glVertex3f(-10, 20, -2);
-    glVertex3f(-10, 20, 10);
-    glVertex3f(-10, 0, 10);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(-10, 0, -2);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f(-10, 20, -2);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f(-10, 20, 10);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f(-10, 0, 10);
 
     // Right Wall
-    glVertex3f(20, 0, -2);
-    glVertex3f(20, 20, -2);
-    glVertex3f(20, 20, 10);
-    glVertex3f(20, 0, 10);
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(20, 0, -2);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f(20, 20, -2);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f(20, 20, 10);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f(20, 0, 10);
+
+    glEnd();
+
+    // Disable texturing for the ceiling
+    glDisable(GL_TEXTURE_2D);
+
+    glBegin(GL_QUADS);
+    glColor3f(9.0f, 0.96f, 0.96f);  // Cream color
 
     // Ceiling
-    glColor3f(9.0f, 0.96f, 0.96f);  // Cream color
     glVertex3f(-10, 19, -2);
     glVertex3f(20, 19, -2);
     glVertex3f(20, 19, 10);
     glVertex3f(-10, 19, 10);
 
-    // Floor (extended forward by 3)
-    glColor3f(0.55f, 0.27f, 0.07f);  // Brown color
-    glVertex3f(-10, 0, -2);
-    glVertex3f(20, 0, -2);
-    glVertex3f(20, 0, 13);
-    glVertex3f(-10, 0, 13);
     glEnd();
-}
 
+    // Enable texturing for the floor
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, floorTexture);
+
+    glBegin(GL_QUADS);
+    glColor3f(1.0f, 1.0f, 1.0f);  // White color to avoid tinting the texture
+
+    // Floor (extended forward by 3)
+    glTexCoord2f(0.0f, 0.0f); glVertex3f(-10, 0, -2);
+    glTexCoord2f(1.0f, 0.0f); glVertex3f(20, 0, -2);
+    glTexCoord2f(1.0f, 1.0f); glVertex3f(20, 0, 13);
+    glTexCoord2f(0.0f, 1.0f); glVertex3f(-10, 0, 13);
+
+    glEnd();
+
+    // Disable texturing
+    glDisable(GL_TEXTURE_2D);
+}
 void drawFridge() {
     glPushMatrix();
         // Transformations
@@ -779,7 +810,11 @@ void drawLeftCabinet() {
     glEnd();
 }
 
-// ##########################
+// #########################
+
+
+
+
 
 void init() {
     glEnable(GL_DEPTH_TEST);  // Enable depth testing
@@ -790,8 +825,47 @@ void init() {
     gluPerspective(45, 800.0 / 600.0, 0.1, 100);  // FOV, Aspect, Near, Far
 
     glMatrixMode(GL_MODELVIEW); // Switch back to ModelView
-}
 
+    int width, height, nrChannels;
+    unsigned char* data = stbi_load("Floor-tex.jpg", &width, &height, &nrChannels, 0);
+    if (data) {
+        glGenTextures(1, &floorTexture);
+        glBindTexture(GL_TEXTURE_2D, floorTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        // Set the texture wrapping/filtering options (on the currently bound texture object)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        stbi_image_free(data);
+    }
+    else {
+        std::cout << "Failed to load floor texture" << std::endl;
+    }
+
+    // Load the wall texture
+    data = stbi_load("Wall-tex.jpg", &width, &height, &nrChannels, 0);
+    if (data) {
+        glGenTextures(1, &wallTexture);
+        glBindTexture(GL_TEXTURE_2D, wallTexture);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        // Set the texture wrapping/filtering options (on the currently bound texture object)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        stbi_image_free(data);
+    }
+    else {
+        std::cout << "Failed to load wall texture" << std::endl;
+    }
+}
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
